@@ -1,0 +1,743 @@
+.meeting {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #f3f5fa;
+  background: #0b1020;
+}
+
+.meetingHeader {
+  height: 66px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #11172a;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #f7f8fb;
+  font-size: 1.1rem;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+}
+
+.meetingHeader .brand::before {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  content: "";
+  background: #ffa500;
+  box-shadow: 0 0 14px rgba(255, 165, 0, 0.55);
+}
+
+.meetingInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #e4e7ef;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #38c78d;
+  box-shadow: 0 0 10px rgba(56, 199, 141, 0.4);
+}
+
+.roomId {
+  padding-left: 0.65rem;
+  border-left: 1px solid #3b3e48;
+  color: #9299a8;
+  font-size: 0.76rem;
+  font-weight: 450;
+}
+
+.headerLink {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 0.75rem;
+  border: 1px solid #424653;
+  border-radius: 8px;
+  color: #e4e7ef;
+  background: transparent;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.headerLink:hover {
+  background: #242833;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  overflow: hidden;
+}
+
+.participantGrid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  grid-auto-rows: minmax(180px, 1fr);
+  align-content: center;
+  gap: 0.8rem;
+}
+
+.participantTile {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 13px;
+  background: #20232d;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.participantTile video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  background: #08090d;
+}
+
+.localTile video {
+  transform: scaleX(-1);
+}
+
+.hostTile {
+  position: absolute;
+  right: clamp(1rem, 2vw, 1.5rem);
+  bottom: clamp(1rem, 2vw, 1.5rem);
+  z-index: 2;
+  width: clamp(190px, 22vw, 310px);
+  height: clamp(125px, 17vw, 200px);
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.hostTile video {
+  object-fit: cover;
+}
+
+.tileCaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: #f5f6f9;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.74));
+  font-size: 0.78rem;
+  font-weight: 550;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.cameraOffOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  color: #fff;
+  background: #171a22;
+}
+
+.cameraOffOverlay > span {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #dce3f2;
+  background: #384052;
+  font-size: 1.5rem;
+  font-weight: 650;
+}
+
+.cameraOffOverlay small {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #c1c6d1;
+  font-size: 0.75rem;
+}
+
+.waitingCard {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: min(390px, calc(100% - 2rem));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.waitingIcon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 1rem;
+  border-radius: 18px;
+  color: #ffc04d;
+  background: #292316;
+}
+
+.waitingCard h2 {
+  color: #f1f3f8;
+  font-size: 1.2rem;
+  font-weight: 650;
+}
+
+.waitingCard p {
+  margin-top: 0.5rem;
+  color: #9da4b2;
+  font-size: 0.86rem;
+}
+
+.waitingCard button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.15rem;
+  padding: 0 0.9rem;
+  border: 0;
+  border-radius: 8px;
+  color: #171923;
+  background: #ffa500;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chatPanel {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 4;
+  width: min(360px, calc(100% - 2rem));
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #373b46;
+  border-radius: 13px;
+  background: #1c1f28;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.chatHeader {
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  border-bottom: 1px solid #353943;
+}
+
+.chatHeader h2 {
+  color: #f2f4f8;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.chatHeader span {
+  display: block;
+  margin-top: 0.15rem;
+  color: #999fad;
+  font-size: 0.72rem;
+}
+
+.chatHeader button,
+.messageForm button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  color: #c5cad5;
+  background: transparent;
+  cursor: pointer;
+}
+
+.chatHeader button {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+}
+
+.chatHeader button:hover {
+  background: #30343e;
+}
+
+.messageList {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.emptyChat {
+  margin-top: 1rem;
+  color: #9ba2b0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.messageItem {
+  margin-bottom: 1rem;
+}
+
+.messageItem strong {
+  color: #ffc04d;
+  font-size: 0.76rem;
+}
+
+.messageItem p {
+  margin-top: 0.25rem;
+  color: #e1e4eb;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.messageForm {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-top: 1px solid #353943;
+}
+
+.messageForm input {
+  min-width: 0;
+  flex: 1;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #414551;
+  border-radius: 8px;
+  outline: 0;
+  color: #f2f4f8;
+  background: #252832;
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.messageForm input:focus {
+  border-color: #ffa500;
+}
+
+.messageForm button {
+  width: 38px;
+  border-radius: 8px;
+  color: #fff;
+  color: #171923;
+  background: #ffa500;
+}
+
+.messageForm button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.meetingError {
+  position: absolute;
+  bottom: 88px;
+  left: 50%;
+  z-index: 5;
+  max-width: calc(100% - 2rem);
+  padding: 0.55rem 0.8rem;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255, 190, 118, 0.28);
+  border-radius: 8px;
+  color: #ffe3c3;
+  background: #39291d;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.controlBar {
+  min-height: 84px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem clamp(0.75rem, 3vw, 2.5rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #11172a;
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.35rem, 1vw, 0.8rem);
+}
+
+.controlButton {
+  min-width: 70px;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.32rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #e2e5ec;
+  background: #282c36;
+  font: inherit;
+  font-size: 0.67rem;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.controlButton:hover {
+  background: #343946;
+}
+
+.controlButton span {
+  white-space: nowrap;
+}
+
+.controlOff {
+  border-color: rgba(255, 114, 114, 0.22);
+  color: #ffb1b1;
+  background: #432b31;
+}
+
+.controlOff:hover {
+  background: #58343c;
+}
+
+.controlActive {
+  color: #ffc04d;
+  background: #49351b;
+}
+
+.participantCount {
+  position: absolute;
+  left: clamp(1rem, 3vw, 2.5rem);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #b7bdc9;
+  font-size: 0.82rem;
+}
+
+.leaveButton {
+  position: absolute;
+  right: clamp(1rem, 3vw, 2.5rem);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  border: 0;
+  border-radius: 9px;
+  color: white;
+  background: #dd454c;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.leaveButton:hover {
+  background: #c9363e;
+}
+
+.lobby {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  color: #171923;
+  background:
+    radial-gradient(ellipse at 75% 30%, rgba(255, 159, 10, 0.1), transparent 30rem),
+    #f5f6fa;
+}
+
+.lobbyCard {
+  width: min(460px, 100%);
+  padding: clamp(1.6rem, 5vw, 2.5rem);
+  border: 1px solid #e9eaf0;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(24, 30, 60, 0.08);
+}
+
+.lobbyBrand {
+  color: #171923;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.lobbyBrand span {
+  color: #ff9f0a;
+}
+
+.eyebrow {
+  margin-top: 2rem;
+  color: #d98500;
+  font-size: 0.69rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.lobbyCard h1 {
+  margin-top: 0.55rem;
+  color: #171923;
+  font-size: clamp(2rem, 6vw, 2.5rem);
+  letter-spacing: -0.055em;
+}
+
+.lobbyDescription {
+  margin-top: 0.6rem;
+  color: #74798a;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.joinForm {
+  margin-top: 1.5rem;
+}
+
+.joinForm label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #555b6b;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.joinForm input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 0.85rem;
+  border: 1px solid #e1e4ec;
+  border-radius: 9px;
+  outline: 0;
+  color: #343846;
+  background: #fff;
+  font: inherit;
+  font-size: 0.88rem;
+}
+
+.joinForm input:focus {
+  border-color: #ffa500;
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.14);
+}
+
+.lobbyOptions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.optionButton {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 0.7rem;
+  border: 1px solid #e1e4ec;
+  border-radius: 8px;
+  color: #555b6b;
+  background: #f5f6fa;
+  font: inherit;
+  font-size: 0.77rem;
+  cursor: pointer;
+}
+
+.optionOff {
+  color: #a64b34;
+  border-color: rgba(255, 159, 10, 0.35);
+  background: #fffaf1;
+}
+
+.errorMessage {
+  margin-top: 0.75rem;
+  color: #b5474b;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.joinButton {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 1.2rem;
+  border: 0;
+  border-radius: 12px;
+  color: #171923;
+  background: #ffa500;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.joinButton:hover {
+  background: #f59a00;
+}
+
+.copyLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 0.85rem auto 0;
+  padding: 0.4rem;
+  border: 0;
+  color: #74798a;
+  background: transparent;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.copyLink:hover {
+  color: #d98500;
+}
+
+@media (max-width: 720px) {
+  .meetingHeader {
+    height: 58px;
+  }
+
+  .meetingInfo {
+    font-size: 0.78rem;
+  }
+
+  .roomId {
+    display: none;
+  }
+
+  .participantGrid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+    grid-auto-rows: minmax(150px, 1fr);
+  }
+
+  .hostTile {
+    width: clamp(145px, 38vw, 210px);
+    height: clamp(100px, 28vw, 145px);
+  }
+
+  .controlBar {
+    min-height: 76px;
+    justify-content: center;
+  }
+
+  .controlButton {
+    min-width: 55px;
+    min-height: 52px;
+    padding: 0.35rem 0.4rem;
+    font-size: 0.61rem;
+  }
+
+  .participantCount {
+    display: none;
+  }
+
+  .leaveButton {
+    right: 0.75rem;
+    min-height: 42px;
+    padding: 0 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .meetingHeader {
+    padding: 0 0.85rem;
+  }
+
+  .meetingInfo {
+    gap: 0.4rem;
+  }
+
+  .headerLink {
+    padding: 0 0.55rem;
+    font-size: 0.72rem;
+  }
+
+  .stage {
+    padding: 0.55rem;
+  }
+
+  .participantGrid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(180px, 1fr);
+    gap: 0.55rem;
+  }
+
+  .hostTile {
+    right: 0.75rem;
+    bottom: 0.75rem;
+  }
+
+  .controlBar {
+    gap: 0.4rem;
+    padding: 0.5rem 0.4rem;
+  }
+
+  .controlGroup {
+    gap: 0.25rem;
+  }
+
+  .controlButton {
+    min-width: 48px;
+    padding-right: 0.3rem;
+    padding-left: 0.3rem;
+  }
+
+  .leaveButton {
+    width: 43px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .leaveButton span {
+    display: none;
+  }
+
+  .meetingError {
+    bottom: 78px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controlButton {
+    transition: none;
+  }
+}
