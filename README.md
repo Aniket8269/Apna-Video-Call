@@ -70,7 +70,7 @@ Camera, microphone, and screen-sharing access require browser permission. Media 
 
 ### 1. Configure MongoDB
 
-The backend connects to MongoDB from `Backend/src/app.js`. Configure the connection string there for your MongoDB deployment before starting the backend. Keep credentials private and do not commit them to source control.
+Set the `MONGODB_URI` environment variable to your MongoDB connection string before starting the backend. Keep credentials private and do not commit them to source control.
 
 ### 2. Start the backend
 
@@ -79,10 +79,11 @@ From the project root:
 ```powershell
 cd .\Backend
 npm install
+$env:MONGODB_URI = "mongodb+srv://<username>:<password>@<cluster>/<database>"
 npm run dev
 ```
 
-The server listens on port `8000` by default. Set `PORT` to use another port. The frontend account API currently targets `http://localhost:8000/api/v1/users`.
+The server listens on port `8000` by default. Set `PORT` to use another port. The frontend uses `http://localhost:8000` in development and the configured Render server in production. Set `VITE_SERVER_URL` in the frontend environment to override the server URL for both account requests and meeting signaling.
 
 ### 3. Start the frontend
 
@@ -94,7 +95,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite in your browser. The meeting signaling client uses `http://localhost:8000` by default. Set `VITE_SERVER_URL` in the frontend environment to point meeting signaling at a different server URL. If you change the backend port, update the account API base URL in `Frontend/src/Contexts/AuthContext.jsx` as well.
+Open the local URL printed by Vite in your browser. If you change the backend port, set `VITE_SERVER_URL` in the frontend environment to the new server URL.
 
 ## Available commands
 
@@ -150,5 +151,5 @@ Meeting rooms and chat are managed through Socket.IO rather than REST endpoints.
 - Chat history is held in backend memory for the lifetime of an active room and is cleared after the last participant leaves. It is not stored in MongoDB.
 - Peer-to-peer connectivity uses a public STUN server. Some network setups may require TURN support for reliable connections.
 - The Socket.IO server currently allows cross-origin connections from any origin; configure this appropriately before production deployment.
-- The account API URL is currently hard-coded to localhost in the frontend authentication context. The meeting signaling URL supports `VITE_SERVER_URL`.
+- The API and meeting signaling both use the same `VITE_SERVER_URL` override.
 - No automated frontend or backend test suite is currently configured.

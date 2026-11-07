@@ -17,8 +17,9 @@ import {
 import { io } from "socket.io-client";
 import styles from "../styles/VideoComponent.module.css";
 import AuthContext from "../Contexts/AuthContext";
+import server from "../environment.js";
 
-const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8000";
+const serverUrl = server;
 
 export default function VideoMeetComponent() {
   const { url: roomId } = useParams();
@@ -198,7 +199,7 @@ export default function VideoMeetComponent() {
     });
     socket.on("connect", () => {
       socketIdRef.current = socket.id;
-      socket.emit("join-call", window.location.href);
+      socket.emit("join-call", roomId);
     });
   };
 

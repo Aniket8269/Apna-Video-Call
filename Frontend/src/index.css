@@ -4,9 +4,9 @@
   --background-color: #ffffff;
   --border-color: #e5e4e7;
 
-  --accent-color: #aa3bff;
-  --accent-hover: #9228e6;
-  --accent-light: rgba(170, 59, 255, 0.1);
+  --accent-color: #ffa500;
+  --accent-hover: #f59a00;
+  --accent-light: rgba(255, 165, 0, 0.1);
 
   --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, sans-serif;

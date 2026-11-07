@@ -1,29 +1,39 @@
 import axios from "axios";
 import { createContext, useState } from "react";
-
+import server from "../environment.js";
 const AuthContext = createContext(null);
 
 const client = axios.create({
-  baseURL: "http://localhost:8000/api/v1/users",
+  baseURL: server + "/api/v1/users",
 });
 
 export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(() => {
-    const token = localStorage.getItem("token");
-    const username = localStorage.getItem("username");
+    const storage = localStorage.getItem("token")
+      ? localStorage
+      : sessionStorage;
+    const token = storage.getItem("token");
+    const username = storage.getItem("username");
     if (!token || !username) return null;
 
     return {
-      name: localStorage.getItem("name") || username,
+      name: storage.getItem("name") || username,
       username,
       token,
     };
   });
 
-  const saveSession = (name, username, token) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("username", username);
-    localStorage.setItem("name", name);
+  const saveSession = (name, username, token, remember = true) => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("name");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("name");
+    const storage = remember ? localStorage : sessionStorage;
+    storage.setItem("token", token);
+    storage.setItem("username", username);
+    storage.setItem("name", name);
     setUserData({ name, username, token });
   };
 
@@ -43,12 +53,12 @@ export const AuthProvider = ({ children }) => {
     return response.data.message;
   };
 
-  const handleLogin = async (username, password) => {
+  const handleLogin = async (username, password, remember = true) => {
     const response = await client.post("/login", {
       username,
       password,
     });
-    saveSession(username, username, response.data.token);
+    saveSession(response.data.name || username, username, response.data.token, remember);
     return response.data.message;
   };
 
@@ -56,6 +66,9 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
     localStorage.removeItem("name");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("name");
     setUserData(null);
   };
 

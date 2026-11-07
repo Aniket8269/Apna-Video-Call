@@ -1,7 +1,10 @@
 import { Server } from "socket.io";
 
-const connections = {};
-const messages = {};
+const connections = new Map();
+const messages = new Map();
+const maxRoomLength = 128;
+const maxMessageLength = 1000;
+const maxStoredMessages = 100;
 
 export const connectToSocket = (server) => {
   const io = new Server(server, {
@@ -13,7 +16,12 @@ export const connectToSocket = (server) => {
 
   io.on("connection", (socket) => {
     socket.on("join-call", (room) => {
-      if (typeof room !== "string" || room.length === 0) return;
+      if (
+        typeof room !== "string" ||
+        !room.trim() ||
+        room.length > maxRoomLength
+      ) return;
+      room = room.trim();
 
       const previousRoom = socket.data.room;
       if (previousRoom === room) return;
@@ -23,38 +31,56 @@ export const connectToSocket = (server) => {
         socket.leave(previousRoom);
       }
 
-      if (!connections[room]) {
-        connections[room] = [];
+      if (!connections.has(room)) {
+        connections.set(room, new Set());
       }
 
-      if (!connections[room].includes(socket.id)) {
-        connections[room].push(socket.id);
-      }
+      const clients = connections.get(room);
+      clients.add(socket.id);
 
       socket.data.room = room;
       socket.join(room);
 
-      const clients = connections[room];
-      io.to(room).emit("user-joined", socket.id, clients);
+      io.to(room).emit("user-joined", socket.id, [...clients]);
 
-      for (const message of messages[room] ?? []) {
+      for (const message of messages.get(room) ?? []) {
         socket.emit("chat-message", message.data, message.sender, message.socketId);
       }
     });
 
     socket.on("signal", (toId, message) => {
-      if (typeof toId !== "string" || typeof message !== "string") return;
+      const target = typeof toId === "string" ? io.sockets.sockets.get(toId) : null;
+      const room = socket.data.room;
+      if (
+        typeof message !== "string" ||
+        message.length > maxMessageLength * 100 ||
+        !room ||
+        target?.data.room !== room
+      ) return;
       io.to(toId).emit("signal", socket.id, message);
     });
 
     socket.on("chat-message", (data, sender) => {
       const room = socket.data.room;
-      if (!room || !connections[room]) return;
+      if (
+        !room ||
+        typeof data !== "string" ||
+        !data.trim() ||
+        data.length > maxMessageLength ||
+        !connections.get(room)?.has(socket.id)
+      ) return;
 
-      const chatMessage = { sender, data, socketId: socket.id };
-      messages[room] ??= [];
-      messages[room].push(chatMessage);
-      io.to(room).emit("chat-message", data, sender, socket.id);
+      const safeSender = typeof sender === "string" ? sender.trim().slice(0, 40) : "";
+      const chatMessage = {
+        sender: safeSender,
+        data: data.trim(),
+        socketId: socket.id,
+      };
+      const history = messages.get(room) ?? [];
+      history.push(chatMessage);
+      if (history.length > maxStoredMessages) history.shift();
+      messages.set(room, history);
+      io.to(room).emit("chat-message", chatMessage.data, chatMessage.sender, socket.id);
     });
 
     socket.on("disconnect", () => {
@@ -66,19 +92,15 @@ export const connectToSocket = (server) => {
   });
 
   function removeFromRoom(room, socket) {
-    const clients = connections[room];
-    if (!clients) return;
+    const clients = connections.get(room);
+    if (!clients?.has(socket.id)) return;
 
     socket.to(room).emit("user-left", socket.id);
+    clients.delete(socket.id);
 
-    const index = clients.indexOf(socket.id);
-    if (index !== -1) {
-      clients.splice(index, 1);
-    }
-
-    if (clients.length === 0) {
-      delete connections[room];
-      delete messages[room];
+    if (clients.size === 0) {
+      connections.delete(room);
+      messages.delete(room);
     }
   }
 

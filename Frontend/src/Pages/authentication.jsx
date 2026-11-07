@@ -9,7 +9,6 @@ import {
   FormControlLabel,
   IconButton,
   InputAdornment,
-  Link,
   Paper,
   Snackbar,
   Stack,
@@ -97,7 +96,7 @@ export default function Authentication() {
       if (isSignUp) {
         await handleRegister(name.trim(), username.trim(), password);
       } else {
-        await handleLogin(username.trim(), password);
+        await handleLogin(username.trim(), password, rememberMe);
       }
 
       navigate("/home", { replace: true });
@@ -507,19 +506,6 @@ export default function Authentication() {
                       }
                     />
 
-                    <Link
-                      href="#"
-                      underline="hover"
-                      onClick={(e) => e.preventDefault()}
-                      sx={{
-                        fontSize: "0.85rem",
-                        fontWeight: 600,
-                        color: "#d98500",
-                        
-                      }}
-                    >
-                      Forgot password?
-                    </Link>
                   </Stack>
                 )}
 
